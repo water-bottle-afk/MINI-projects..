@@ -1,22 +1,5 @@
-# main 
-from PIL import Image
-maze = Image.open("maze.png")
-links = {}
-directions = (0, 1), (0, -1), (1, 0), (-1, 0)
-path_color = (255,) *4
-border = (0,0,0,255)
-red = (255,0,0,255)
-width, height = maze.size
-start = (width - 2, 0)
-end = (1, height - 1)
-
 def manhatten(tpl):
-    """
-    :param x:
-    :param y:
-    :return:
-    returns manhatted distance from end.
-    """
+    #returns manhatted distance from end.
     return abs(end[0]-tpl[0])+abs(end[1]-tpl[1])
 
 class Frontier:
@@ -26,18 +9,9 @@ class Frontier:
 
     def add(self, pixel):
         if pixel in self.seen:
-            return False
-        # if pixel not in self.seen and not self.is_empty():
-        #     if manhatten(pixel) <= manhatten(self.forntier[-1]):
-        #         self.seen.append(pixel)
-        #         self.forntier.append(pixel)
-        #         return True
-        # if self.is_empty():
         if (not self.is_empty() and manhatten(self.forntier[0]) > manhatten(pixel)) or self.is_empty():
             self.forntier.append(pixel)
             self.seen.append(pixel)
-            return True
-        # return False
 
     def remove(self):
         if self.is_empty():
@@ -63,3 +37,47 @@ class Frontier:
 
     def print(self):
         print(self.forntier)
+
+from PIL import Image
+#using kinda version on greedy best search
+maze = Image.open("maze.png")
+
+directions = (0, 1), (0, -1), (1, 0), (-1, 0)
+path_color = (255,) *4
+border = (0,0,0,255)
+red = (255,0,0,255)
+width, height = maze.size
+start = (width - 2, 0)
+end = (1, height - 1)
+
+maze.putpixel(end, red)
+maze.putpixel(start, red)
+
+for i,j in zip(range(height), range(width)):
+    maze.putpixel((0, i), red)
+    maze.putpixel((j, 0), red)
+
+frontier = Frontier()
+frontier.add(end)
+i = 1
+try:
+
+    while True:
+        rmv = frontier.remove()
+        frontier.append_from_enviroment(rmv)
+        maze.putpixel(rmv,red)
+        print("add pixel:" , rmv) # logs
+        if rmv == start:
+            print("found")
+            break
+        i+=1
+        if i % 10000 == 0: # logs
+            maze.save(f"try{i//10000}.png")
+            print("got to",i)
+
+    frontier.print()
+except KeyboardInterrupt: # stop while working
+    pass
+finally:
+    maze.save("solution.png")
+    frontier.print()
