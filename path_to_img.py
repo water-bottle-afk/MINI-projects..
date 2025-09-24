@@ -1,35 +1,19 @@
 from PIL import Image
 
-pic_url = r"AAAA.jpeg"
+pic_url = r"Donut-icon.png"
 img = Image.open(pic_url)
 
-img = img.convert("RGB")
+img = img.convert("RGBA")
 
-height, width = img.size
+width, height = img.size  # <-- FIXED
 color = ' .;-:!>7?CO$QHNM'
 
 pixel = img.load()
-with open("resres.txt","w") as file:
-    file.write("")
-with open("resres.txt","a") as file:
+with open("res.txt", "w") as file:
     for h in range(height):
         for w in range(width):
-            try:
-                rgb = pixel[w, h]
-
-                sum_of_rgb = 0
-
-                for i in range(len(rgb)-1):  # i dont want the A in RGBA but the pychram has warned me
-                    sum_of_rgb += rgb[i]
-
-                x = sum_of_rgb // 3
-                x = x // len(color)
-
-                file.write(color[x]+" ")
-                # print(color[x], end=" ")
-            except:
-                pass
+            r, g, b, a = pixel[w, h]
+            brightness = (r + g + b) // 3
+            idx = brightness * (len(color) - 1) // 255
+            file.write(color[idx] + " ")
         file.write('\n')
-    print()
-
-
