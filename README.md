@@ -1,1 +1,1 @@
-# mid-learning
+# mid-learning.. mini projects ive made
