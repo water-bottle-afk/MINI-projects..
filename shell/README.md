@@ -1,4 +1,4 @@
-# Custom Python Shell 🐚
+# Custom Python Shell (Like CMD)
 
 A feature-rich command-line shell implementation in Python that mimics Windows CMD functionality with support for internal commands, external programs, Python scripts, pipelines, and I/O redirection.
 
